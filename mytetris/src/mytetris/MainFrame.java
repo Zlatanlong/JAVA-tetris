@@ -212,6 +212,7 @@ public class MainFrame extends javax.swing.JFrame {
         this.getContentPane().add(gp);
         count=0;
         changeCount();
+        changeNext();
         cp.delOver();
         cp.setProp1Count(5);
         this.requestFocusInWindow();

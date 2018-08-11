@@ -1,9 +1,5 @@
 package mytetris;
 
-/**
- *
- * @author dmt
- */
 public class Controller {
     int removeLog=0;//同时消行数量
     int currentX = 3;
