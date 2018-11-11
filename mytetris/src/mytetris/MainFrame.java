@@ -80,6 +80,9 @@ public class MainFrame extends javax.swing.JFrame {
         model = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         msg2 = new javax.swing.JTextArea();
+        openHomeButton = new javax.swing.JButton();
+        joinHomeButton = new javax.swing.JButton();
+        joinHomeText = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setIconImages(null);
@@ -134,14 +137,30 @@ public class MainFrame extends javax.swing.JFrame {
         msg2.setFocusable(false);
         jScrollPane1.setViewportView(msg2);
 
+        openHomeButton.setText("创建房间");
+        openHomeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openHomeButtonActionPerformed(evt);
+            }
+        });
+
+        joinHomeButton.setText("加入房间");
+        joinHomeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                joinHomeButtonActionPerformed(evt);
+            }
+        });
+
+        joinHomeText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                joinHomeTextActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(msg, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46))
             .addGroup(layout.createSequentialGroup()
                 .addGap(35, 35, 35)
                 .addComponent(start, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -152,12 +171,23 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(model, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(32, 32, 32))
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1)
                     .addComponent(go, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(openHomeButton)
+                            .addComponent(msg, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(46, 46, 46))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(joinHomeText, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(joinHomeButton)
+                        .addGap(174, 174, 174))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -175,8 +205,17 @@ public class MainFrame extends javax.swing.JFrame {
                         .addComponent(model, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(70, 70, 70)
                 .addComponent(msg, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(go, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(go, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(139, 139, 139)
+                        .addComponent(openHomeButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(joinHomeButton)
+                            .addComponent(joinHomeText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(61, Short.MAX_VALUE))
@@ -199,33 +238,33 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void goActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goActionPerformed
         // 开始游戏按钮:
-        MainFrame.isOver = false;
-        msg.setVisible(false);
-        msg2.setVisible(false);
-        jScrollPane1.setVisible(false);
-        start.setVisible(true);
-        pause.setVisible(true);
-        gp2 = new GamePanel(false);
-        gp2.setSize(200, 400);
-        gp2.setLocation(450, 100);
-        this.getContentPane().add(gp2);
-
-        server = new GameServer();
-        ClientListen clientListen = new ClientListen(gp2);
-        setSocket(server.getSocket());
-        
-        gp = new GamePanel(true);
-        gp.setSize(200, 400);
-        gp.setLocation(50, 100);
-        this.getContentPane().add(gp);
-
-        changeNext();
-
-        cp.setVisible(true);
-        cp2.setVisible(true);
-
-        go.setVisible(false);
-        this.requestFocusInWindow();
+//        MainFrame.isOver = false;
+//        msg.setVisible(false);
+//        msg2.setVisible(false);
+//        jScrollPane1.setVisible(false);
+//        start.setVisible(true);
+//        pause.setVisible(true);
+//        gp2 = new GamePanel(false);
+//        gp2.setSize(200, 400);
+//        gp2.setLocation(450, 100);
+//        this.getContentPane().add(gp2);
+//
+//        server = new GameServer();
+//        ClientListen clientListen = new ClientListen(gp2);
+//        setSocket(server.getSocket());
+//        
+//        gp = new GamePanel(true);
+//        gp.setSize(200, 400);
+//        gp.setLocation(50, 100);
+//        this.getContentPane().add(gp);
+//
+//        changeNext();
+//
+//        cp.setVisible(true);
+//        cp2.setVisible(true);
+//
+//        go.setVisible(false);
+//        this.requestFocusInWindow();
     }//GEN-LAST:event_goActionPerformed
 
     private void pauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseActionPerformed
@@ -291,6 +330,75 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_modelActionPerformed
 
+    private void openHomeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openHomeButtonActionPerformed
+        MainFrame.isOver = false;
+        msg.setVisible(false);
+        msg2.setVisible(false);
+        jScrollPane1.setVisible(false);
+        start.setVisible(true);
+        pause.setVisible(true);
+        gp2 = new GamePanel(false);
+        gp2.setSize(200, 400);
+        gp2.setLocation(450, 100);
+        this.getContentPane().add(gp2);
+
+        server = new GameServer(gp2);
+//        ClientListen clientListen = new ClientListen(gp2);
+        setSocket(server.getSocket());
+        
+        gp = new GamePanel(true);
+        gp.setSize(200, 400);
+        gp.setLocation(50, 100);
+        this.getContentPane().add(gp);
+
+        changeNext();
+
+        cp.setVisible(true);
+        cp2.setVisible(true);
+
+        go.setVisible(false);
+        openHomeButton.setVisible(false);
+        joinHomeButton.setVisible(false);
+        joinHomeText.setVisible(false);
+        this.requestFocusInWindow();
+    }//GEN-LAST:event_openHomeButtonActionPerformed
+
+    private void joinHomeTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joinHomeTextActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_joinHomeTextActionPerformed
+
+    private void joinHomeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joinHomeButtonActionPerformed
+        MainFrame.isOver = false;
+        msg.setVisible(false);
+        msg2.setVisible(false);
+        jScrollPane1.setVisible(false);
+        start.setVisible(true);
+        pause.setVisible(true);
+        gp2 = new GamePanel(false);
+        gp2.setSize(200, 400);
+        gp2.setLocation(450, 100);
+        this.getContentPane().add(gp2);
+
+        ClientListen clientListen = new ClientListen(gp2);
+        setSocket(clientListen.getSocket());
+        
+        gp = new GamePanel(true);
+        gp.setSize(200, 400);
+        gp.setLocation(50, 100);
+        this.getContentPane().add(gp);
+
+        changeNext();
+
+        cp.setVisible(true);
+        cp2.setVisible(true);
+
+        go.setVisible(false);
+        openHomeButton.setVisible(false);
+        joinHomeButton.setVisible(false);
+        joinHomeText.setVisible(false);
+        this.requestFocusInWindow();
+    }//GEN-LAST:event_joinHomeButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -331,9 +439,12 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton go;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton joinHomeButton;
+    private javax.swing.JTextField joinHomeText;
     private javax.swing.JComboBox<String> model;
     private javax.swing.JLabel msg;
     private javax.swing.JTextArea msg2;
+    private javax.swing.JButton openHomeButton;
     private javax.swing.JButton pause;
     private javax.swing.JButton start;
     // End of variables declaration//GEN-END:variables

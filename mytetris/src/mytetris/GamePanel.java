@@ -21,18 +21,15 @@ public class GamePanel extends javax.swing.JPanel implements Runnable {
         controller.inintFix();
         if (ifMy) {
             new Thread(this).start();
-            System.out.println("123");
         }
     }
 
     @Override
     public void run() {
-        System.out.println("456");
         while (!MainFrame.isOver) {
             try {
                 if (!MainFrame.isPause) {
                     controller.down(true);
-                    System.out.println("下" + controller.getState().getInterval());
                     this.repaint();
                 }
                 Thread.currentThread().sleep(controller.getState().getInterval());

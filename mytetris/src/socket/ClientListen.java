@@ -42,4 +42,8 @@ public class ClientListen extends Thread {
             e.printStackTrace();
         }
     }
+    
+    public Socket getSocket() {
+        return clientSocket;
+    }
 }
