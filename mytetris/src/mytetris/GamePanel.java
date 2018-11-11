@@ -2,34 +2,37 @@ package mytetris;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
- * @author dmt
- * 整个gamepanel分为10*20（宽*高） 200 块
- * 每一块根据fix[x][y]的值来区分颜色，其中若为0 不单独添加颜色，相当于正常
- * 10为红色，现在导致游戏over的那个形状会被画成红色，其他颜色均代表墙。
- * 1-7代表7中颜色，9为不区分形状颜色时墙的颜色
+ * @author dmt 整个gamepanel分为10*20（宽*高） 200 块 每一块根据fix[x][y]的值来区分颜色，其中若为0
+ * 不单独添加颜色，相当于正常 10为红色，现在导致游戏over的那个形状会被画成红色，其他颜色均代表墙。 1-7代表7中颜色，9为不区分形状颜色时墙的颜色
  */
 public class GamePanel extends javax.swing.JPanel implements Runnable {
 
     Controller controller = new Controller();
 
-    public GamePanel() {
+    public GamePanel(Boolean ifMy) {
         initComponents();
         controller.getNewShape();
         controller.inintFix();
-        new Thread(this).start();
+        if (ifMy) {
+            new Thread(this).start();
+            System.out.println("123");
+        }
     }
-    
+
     @Override
     public void run() {
+        System.out.println("456");
         while (!MainFrame.isOver) {
             try {
                 if (!MainFrame.isPause) {
-                    controller.down();
+                    controller.down(true);
+                    System.out.println("下" + controller.getState().getInterval());
                     this.repaint();
                 }
                 Thread.currentThread().sleep(controller.getState().getInterval());
@@ -48,6 +51,7 @@ public class GamePanel extends javax.swing.JPanel implements Runnable {
 
     /**
      * 画墙
+     *
      * @param g
      */
     public void drawFix(Graphics g) {
@@ -109,20 +113,24 @@ public class GamePanel extends javax.swing.JPanel implements Runnable {
     }
 
     /**
-     * 画形状
-     * 同时判断结束, 判断逻辑： 如果要画形状的时候当前位置已经有墙了，说明墙已经到了最上面，
-     * 因此游戏结束
+     * 画形状 同时判断结束, 判断逻辑： 如果要画形状的时候当前位置已经有墙了，说明墙已经到了最上面， 因此游戏结束
+     *
      * @param g
      * @param x
      * @param y
      */
     public void drawBlocks(Graphics g, int x, int y) {
         int[] shape = controller.getCurrentShape().getCurrentBlocks();
+//        for (int i = 0; i < shape.length; i++) {
+//            int j = shape[i];
+//            System.out.print(j);
+//        }
+//        System.out.println("huanhang");
         for (int i = 0; i < shape.length; i += 2) {
             if (controller.fix[shape[i] + x][shape[i + 1] + y] != 0) {
                 // 把结束的这个形状位置号标为10， 会化成红色
                 for (int j = 0; j < shape.length; j += 2) {
-                    controller.fix[shape[j] + x][shape[j + 1] + y]=10;
+                    controller.fix[shape[j] + x][shape[j + 1] + y] = 10;
                 }
                 MainFrame.over();
                 return;
@@ -135,53 +143,57 @@ public class GamePanel extends javax.swing.JPanel implements Runnable {
             g.fillRect(20 * (shape[i] + x), 20 * (shape[i + 1] + y), 18, 18);
         }
     }
-    
+
     public Block getNextBlock() {
         return controller.getNextShape();
     }
-    
+
     /**
-     * 展示时更改下一个Block
-     * @param block 
+     * 展示时设置第一个Block
+     *
+     * @param block
      */
-    public void setNextBlock(Block block) {
+    public void setFirstBlock(Block block) {
         getGameState().setNextBlock(block);
     }
-    
+
+    public void setNewBlock(Block block) {
+        getGameState().setNewBlock(block);
+    }
+
     public GameState getGameState() {
         return controller.getState();
     }
-    
+
 //    public void changeCount() {
 //        controller.getState().changeCount();
 //    }
-    
     public void keyPressed(java.awt.event.KeyEvent evt) {
-        if ((!MainFrame.isOver)&&(!MainFrame.isPause)) {
+        if ((!MainFrame.isOver) && (!MainFrame.isPause)) {
             switch (evt.getKeyCode()) {
                 case 37:
-                    controller.left();
+                    controller.left(true);
                     break;
                 case 39:
-                    controller.right();
+                    controller.right(true);
                     break;
                 case 40:
-                    controller.down();
+                    controller.down(true);
                     break;
                 case 38:
-                    controller.turn();
+                    controller.turn(true);
                     break;
                 case 65:
-                    controller.left();
+                    controller.left(true);
                     break;
                 case 68:
-                    controller.right();
+                    controller.right(true);
                     break;
                 case 83:
-                    controller.down();
+                    controller.down(true);
                     break;
                 case 87:
-                    controller.turn();
+                    controller.turn(true);
                     break;
                 default:
                     break;
@@ -189,36 +201,25 @@ public class GamePanel extends javax.swing.JPanel implements Runnable {
             repaint();
         }
     }
-    
+
     public void getPressed(String code) {
-        if ((!MainFrame.isOver)&&(!MainFrame.isPause)) {
-            switch (Integer.valueOf(code)) {
-                case 37:
-                    controller.left();
-                    break;
-                case 39:
-                    controller.right();
-                    break;
-                case 40:
-                    controller.down();
-                    break;
-                case 38:
-                    controller.turn();
-                    break;
-                case 65:
-                    controller.left();
-                    break;
-                case 68:
-                    controller.right();
-                    break;
-                case 83:
-                    controller.down();
-                    break;
-                case 87:
-                    controller.turn();
-                    break;
-                default:
-                    break;
+        if ((!MainFrame.isOver) && (!MainFrame.isPause)) {
+            if (code.equals("move37")) {
+                controller.left(false);
+            } else if (code.equals("move38")) {
+                controller.turn(false);
+            } else if (code.equals("move39")) {
+                controller.right(false);
+            } else if (code.equals("move40")) {
+                controller.down(false);
+            } else if (code.substring(0, 6).equals("fBlock")) {
+                int i = Integer.valueOf(code.substring(6));
+                Block block = new Block(i);
+                setFirstBlock(block);
+            } else if (code.substring(0, 6).equals("nBlock")) {
+                int i = Integer.valueOf(code.substring(6));
+                Block block = new Block(i);
+                setNewBlock(block);
             }
             repaint();
         }

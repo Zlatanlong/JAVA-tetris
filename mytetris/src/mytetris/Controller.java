@@ -5,8 +5,6 @@ import socket.SocketUtil;
 
 public class Controller {
 
-    Socket socket;
-
     int removeLog = 0;//同时消行数量
     /**
      * 初始化状态
@@ -66,19 +64,23 @@ public class Controller {
     }
 
     // 上下左右和翻转 先判断是否出界
-    public void left() {
+    public void left(Boolean ifSend) {
         if (isValid(currentX - 1, currentY)) {
             currentX--;
-            SocketUtil.send(socket, "37");
+            if (ifSend) {
+                SocketUtil.send(MainFrame.socket, "move37");
+
+            }
         }
 
     }
 
-    public void right() {
+    public void right(Boolean ifSend) {
         if (isValid(currentX + 1, currentY)) {
             currentX++;
-            SocketUtil.send(socket, "39");
-
+            if (ifSend) {
+                SocketUtil.send(MainFrame.socket, "move39");
+            }
         }
 
     }
@@ -86,22 +88,25 @@ public class Controller {
     /**
      * 方块下落，落不下去的就死掉了
      */
-    public void down() {
+    public void down(Boolean ifSend) {
+        if (ifSend) {
+            SocketUtil.send(MainFrame.socket, "move40");
+        }
         if (isValid(currentX, currentY + 1)) {
             currentY++;
-            SocketUtil.send(socket, "40");
-
         } else {
-            add(currentX, currentY);
+            add(currentX, currentY, ifSend);
         }
     }
 
-    public void turn() {
+    public void turn(Boolean ifSend) {
         getState().getCurrentBlock().next();
         if (!isValid(currentX, currentY)) {
             getState().getCurrentBlock().forward();
-            SocketUtil.send(socket, "38");
-
+        } else {
+            if (ifSend) {
+                SocketUtil.send(MainFrame.socket, "move38");
+            }
         }
     }
 
@@ -111,16 +116,18 @@ public class Controller {
      * @param x
      * @param y
      */
-    public void add(int x, int y) {
+    public void add(int x, int y, Boolean ifMy) {
         int[] tempShape = getState().getCurrentBlock().getCurrentBlocks();
         for (int i = 0; i < 8; i += 2) {
-            fix[x + tempShape[i]][y + tempShape[i + 1]] = getState().getCurrentBlock().getI() + 1;
+            fix[x + tempShape[i]][y + tempShape[i + 1]] = getState().getCurrentBlock().getIColor() + 1;
         }
         remove();
         currentX = 3;
         currentY = 0;
-        getNewShape();
-        MainFrame.changeNext();
+        if (ifMy) {
+            getNewShape();
+            MainFrame.changeNext();
+        }
     }
 
     /**
@@ -191,4 +198,5 @@ public class Controller {
     public GameState getState() {
         return state;
     }
+
 }

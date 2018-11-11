@@ -29,17 +29,7 @@ public class GameServer extends Thread {
         }
     }
 
-    public void send(String string) {
-        if (client != null) {
-            try {
-                PrintWriter pw = new PrintWriter(
-                        new OutputStreamWriter(
-                                client.getOutputStream()));
-                pw.println(string);
-                pw.flush();
-            } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+    public Socket getSocket() {
+        return client;
     }
 }

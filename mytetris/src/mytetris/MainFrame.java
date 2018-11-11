@@ -1,15 +1,17 @@
 package mytetris;
 
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import socket.ClientListen;
 import socket.GameServer;
 
 public class MainFrame extends javax.swing.JFrame {
 
-//    static int interval = 1000;
+    static Socket socket;
     static int mod;
     static boolean isOver = true;
     static boolean isPause = false;
-//    static int count = 0;//总分
     static int point;//每次加分
     static GamePanel gp;
     static GamePanel gp2;
@@ -35,7 +37,12 @@ public class MainFrame extends javax.swing.JFrame {
     static public void changeNext() {
         cp.setNextBlock(gp.getNextBlock());
         cp.repaint();
-        cp2.setNextBlock(gp.getNextBlock());
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        cp2.setNextBlock(gp2.getNextBlock());
         cp2.repaint();
         changeCount();
     }
@@ -185,7 +192,6 @@ public class MainFrame extends javax.swing.JFrame {
             } else {
 //                gp2.keyPressed(evt);
             }
-            server.send(Integer.toString(evt.getKeyCode()));
         } catch (NullPointerException e) {
             System.out.println("还没点开始");
         }
@@ -193,27 +199,26 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void goActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goActionPerformed
         // 开始游戏按钮:
+        MainFrame.isOver = false;
         msg.setVisible(false);
         msg2.setVisible(false);
         jScrollPane1.setVisible(false);
         start.setVisible(true);
         pause.setVisible(true);
-        server = new GameServer();
+        gp2 = new GamePanel(false);
+        gp2.setSize(200, 400);
+        gp2.setLocation(450, 100);
+        this.getContentPane().add(gp2);
 
-        gp = new GamePanel();
+        server = new GameServer();
+        ClientListen clientListen = new ClientListen(gp2);
+        setSocket(server.getSocket());
+        
+        gp = new GamePanel(true);
         gp.setSize(200, 400);
         gp.setLocation(50, 100);
         this.getContentPane().add(gp);
 
-        gp2 = new GamePanel();
-        gp2.setSize(200, 400);
-        gp2.setLocation(450, 100);
-        this.getContentPane().add(gp2);
-        
-        ClientListen clientListen = new ClientListen(gp2);
-        
-        MainFrame.isOver = false;
-        
         changeNext();
 
         cp.setVisible(true);
@@ -244,12 +249,12 @@ public class MainFrame extends javax.swing.JFrame {
             e.printStackTrace();
         }
         MainFrame.isOver = false;
-        gp = new GamePanel();
+        gp = new GamePanel(true);
         gp.setSize(200, 400);
         gp.setLocation(50, 100);
         this.getContentPane().add(gp);
 
-        gp2 = new GamePanel();
+        gp2 = new GamePanel(false);
         gp2.setSize(200, 400);
         gp2.setLocation(450, 100);
         this.getContentPane().add(gp2);
@@ -332,4 +337,11 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton pause;
     private javax.swing.JButton start;
     // End of variables declaration//GEN-END:variables
+    public static Socket getSocket() {
+        return socket;
+    }
+
+    public static void setSocket(Socket s) {
+        socket = s;
+    }
 }

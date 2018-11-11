@@ -7,6 +7,7 @@ package mytetris;
 import java.awt.Color;
 import java.util.List;
 import java.util.ArrayList;
+import socket.SocketUtil;
 
 /**
  *
@@ -32,6 +33,24 @@ public class Block {
         allBlocks.add(oblocks);
         colors.add(Color.orange);
         i=(int)(0+Math.random()*(6-0+1));//(数据类型)(最小值+Math.random()*(最大值-最小值+1))
+    }
+    
+    public Block(int i){
+        allBlocks.add(tblocks);
+        colors.add(Color.yellow);
+        allBlocks.add(lblocks);
+        colors.add(Color.blue);
+        allBlocks.add(iblocks);
+        colors.add(Color.green);
+        allBlocks.add(flblocks);
+        colors.add(Color.cyan);
+        allBlocks.add(zblocks);
+        colors.add(Color.pink);
+        allBlocks.add(fzblocks);
+        colors.add(Color.white);
+        allBlocks.add(oblocks);
+        colors.add(Color.orange);
+        this.i = i;
     }
     
     int state=0;//当前的数
@@ -103,10 +122,14 @@ public class Block {
         return colors.get(i);
     }
     
-    public int getI(){
+    public int getIColor(){
         if (MainFrame.mod==0) {
             return 8;
         }
+        return i;
+    }
+    
+    public int getI() {
         return i;
     }
 }

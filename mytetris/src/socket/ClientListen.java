@@ -33,7 +33,6 @@ public class ClientListen extends Thread {
             while (!(code = br.readLine()).equals("bye")) {
                 gamePanel.getPressed(code);
                 gamePanel.repaint();
-                Thread.sleep(10);
             }
             System.out.println("服务端已经关闭了对话！");
             br.close();
