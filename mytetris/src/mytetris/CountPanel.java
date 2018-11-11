@@ -11,6 +11,7 @@ import java.util.logging.Logger;
  */
 public class CountPanel extends javax.swing.JPanel implements Runnable {
     private int prop1Count = 5;
+    private Block nextBlock;
     public CountPanel() {
         initComponents();
         prop1show.setText("数量："+prop1Count);
@@ -32,7 +33,6 @@ public class CountPanel extends javax.swing.JPanel implements Runnable {
     public void run() {
         while (true) {
             try {
-
                 Thread.currentThread().sleep(1000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -41,11 +41,11 @@ public class CountPanel extends javax.swing.JPanel implements Runnable {
     }
     
     public void drawBlocks(Graphics g) {
-        int[] shape = Controller.getNextShape().getCurrentBlocks();
+        int[] shape = nextBlock.getCurrentBlocks();
         for (int i = 0; i < shape.length; i += 2) {
             g.setColor(Color.black);
             g.drawRect(20 * (shape[i])+15 , 20 * (shape[i + 1])+250 , 19, 19);
-            g.setColor(Controller.getNextShape().getColor());
+            g.setColor(nextBlock.getColor());
             g.fillRect(20 * (shape[i])+15 , 20 * (shape[i + 1])+250 , 18, 18);
         }
     }
@@ -133,7 +133,7 @@ public class CountPanel extends javax.swing.JPanel implements Runnable {
     private void prop1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prop1ActionPerformed
         // 使用道具1:
         if (prop1Count>0&&!MainFrame.isOver) {
-            Controller.prop1();
+//            Controller.prop1();
             prop1Count--;
             prop1show.setText("数量："+prop1Count);
         }
@@ -151,5 +151,16 @@ public class CountPanel extends javax.swing.JPanel implements Runnable {
     public void setProp1Count(int prop1Count) {
         this.prop1Count = prop1Count;
         this.prop1show.setText("数量："+prop1Count);
+    }
+    
+    public void setCountText(int count) {
+        this.count.setText(Integer.toString(count));
+    }
+
+    /**
+     * @param nextBlock the nextBlock to set
+     */
+    public void setNextBlock(Block nextBlock) {
+        this.nextBlock = nextBlock;
     }
 }

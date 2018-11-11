@@ -1,32 +1,34 @@
 package mytetris;
 
+import java.net.Socket;
+import socket.SocketUtil;
+
 public class Controller {
-    int removeLog=0;//同时消行数量
+
+    Socket socket;
+
+    int removeLog = 0;//同时消行数量
+    /**
+     * 初始化状态
+     */
     int currentX = 3;
     int currentY = 0;
-    public static int[][] fix = new int[10][20];// 把整个界面分割成10*20
-    Block currentShape;
-    static Block nextShape = new Block();
+    public int[][] fix = new int[10][20];// 把整个界面分割成10*20
+    private GameState state = new GameState();
 
     /**
      * 产生一个新的形状
      */
-    public void getShape() {
-        currentShape = nextShape;
-        nextShape = new Block();
+    public void getNewShape() {
+        getState().getNewBlock();
     }
 
-    /**
-     * 返回当前的形状
-     *
-     * @return
-     */
-    public Block getAShape() {
-        return currentShape;
+    public Block getCurrentShape() {
+        return getState().getCurrentBlock();
     }
 
-    public static Block getNextShape() {
-        return nextShape;
+    public Block getNextShape() {
+        return getState().getNextBlock();
     }
 
     /**
@@ -48,7 +50,7 @@ public class Controller {
      * @return
      */
     public boolean isValid(int x, int y) {
-        int[] tempShape = getAShape().getCurrentBlocks();
+        int[] tempShape = getCurrentShape().getCurrentBlocks();
         for (int i = 0; i < 8; i += 2) {
             if ((tempShape[i + 1] + y) < 0 || (tempShape[i + 1] + y) > 19) {
                 return false;
@@ -67,6 +69,7 @@ public class Controller {
     public void left() {
         if (isValid(currentX - 1, currentY)) {
             currentX--;
+            SocketUtil.send(socket, "37");
         }
 
     }
@@ -74,6 +77,8 @@ public class Controller {
     public void right() {
         if (isValid(currentX + 1, currentY)) {
             currentX++;
+            SocketUtil.send(socket, "39");
+
         }
 
     }
@@ -84,15 +89,19 @@ public class Controller {
     public void down() {
         if (isValid(currentX, currentY + 1)) {
             currentY++;
+            SocketUtil.send(socket, "40");
+
         } else {
             add(currentX, currentY);
         }
     }
 
     public void turn() {
-        currentShape.next();
+        getState().getCurrentBlock().next();
         if (!isValid(currentX, currentY)) {
-            currentShape.forward();
+            getState().getCurrentBlock().forward();
+            SocketUtil.send(socket, "38");
+
         }
     }
 
@@ -103,14 +112,14 @@ public class Controller {
      * @param y
      */
     public void add(int x, int y) {
-        int[] tempShape = currentShape.getCurrentBlocks();
+        int[] tempShape = getState().getCurrentBlock().getCurrentBlocks();
         for (int i = 0; i < 8; i += 2) {
-            fix[x + tempShape[i]][y + tempShape[i + 1]] = currentShape.getI() + 1;
+            fix[x + tempShape[i]][y + tempShape[i + 1]] = getState().getCurrentBlock().getI() + 1;
         }
         remove();
         currentX = 3;
         currentY = 0;
-        getShape();
+        getNewShape();
         MainFrame.changeNext();
     }
 
@@ -127,7 +136,8 @@ public class Controller {
                 }
             }
             if (flag == 0) {
-                MainFrame.count += (MainFrame.point+removeLog);
+                state.setCount(state.getCount() + state.getPoint() + removeLog);
+                state.changeInterval();
                 MainFrame.changeCount();
                 for (int j = 0; j < 10; j++) {
                     fix[j][i] = 0;
@@ -155,10 +165,11 @@ public class Controller {
         }
         removeLog = 1;
     }
+
     /**
      * 道具1
      */
-    static public void prop1() {
+    public void prop1() {
         for (int j = 0; j < 10; j++) {
             fix[j][19] = 0;
         }//消除这一行
@@ -167,8 +178,17 @@ public class Controller {
                 fix[j][k] = fix[j][k - 1];
             }
         }//其他行下移一行
-        MainFrame.count += 10;
+        state.setCount(state.getCount() + 10);
+
+        state.changeInterval();
         MainFrame.changeCount();
         MainFrame.gp.repaint();
+    }
+
+    /**
+     * @return the state
+     */
+    public GameState getState() {
+        return state;
     }
 }

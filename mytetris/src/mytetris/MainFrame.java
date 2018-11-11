@@ -1,46 +1,66 @@
 package mytetris;
 
+import socket.ClientListen;
+import socket.GameServer;
+
 public class MainFrame extends javax.swing.JFrame {
-    static int interval=1000;
+
+//    static int interval = 1000;
     static int mod;
     static boolean isOver = true;
     static boolean isPause = false;
-    static int count=0;//总分
+//    static int count = 0;//总分
     static int point;//每次加分
     static GamePanel gp;
+    static GamePanel gp2;
     static CountPanel cp;
+    static CountPanel cp2;
+    GameServer server;
+
     /**
      * 改变分数显示同时改变速度
      */
-    static  public void changeCount(){
-        cp.count.setText( Integer.toString(MainFrame.count));
-        if (mod!=2&&(1000-count*9)>0) {
-            interval=1000-count*9;
-        }
+    static public void changeCount() {
+        cp.setCountText(gp.getGameState().getCount());
+//        cp2.setCountText(gp2.getGameState().getCount());
     }
-    static public void over(){
-        isOver=true;
-        isPause=false;
+
+    static public void over() {
+        isOver = true;
+        isPause = false;
         cp.showOver();
+        cp2.showOver();
     }
-    static public void changeNext(){
+
+    static public void changeNext() {
+        cp.setNextBlock(gp.getNextBlock());
         cp.repaint();
+        cp2.setNextBlock(gp.getNextBlock());
+        cp2.repaint();
         changeCount();
     }
+
     public MainFrame() {
         //规定画板大小
         initComponents();
         start.setVisible(false);
         pause.setVisible(false);
-        cp=new CountPanel();
-        cp.setSize(100,600);
+
+        cp = new CountPanel();
+        cp.setSize(100, 600);
         cp.setLocation(254, 100);
         cp.setVisible(false);
         this.getContentPane().add(cp);
-        this.setSize(400, 600);
+
+        cp2 = new CountPanel();
+        cp2.setSize(100, 600);
+        cp2.setLocation(654, 100);
+        cp2.setVisible(false);
+        this.getContentPane().add(cp2);
+
+        this.setSize(800, 600);
     }
-    
-            
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -120,7 +140,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(start, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(pause)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 426, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(model, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -159,10 +179,13 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-        // TODO add your handling code here:
-        //System.out.println(evt.getKeyCode());
         try {
-            gp.keyPressed(evt);
+            if (evt.getKeyCode() < 50) {
+                gp.keyPressed(evt);
+            } else {
+//                gp2.keyPressed(evt);
+            }
+            server.send(Integer.toString(evt.getKeyCode()));
         } catch (NullPointerException e) {
             System.out.println("还没点开始");
         }
@@ -175,12 +198,27 @@ public class MainFrame extends javax.swing.JFrame {
         jScrollPane1.setVisible(false);
         start.setVisible(true);
         pause.setVisible(true);
-        cp.setVisible(true);
-        MainFrame.isOver=false;
-        gp=new GamePanel();
-        gp.setSize(200,400);
+        server = new GameServer();
+
+        gp = new GamePanel();
+        gp.setSize(200, 400);
         gp.setLocation(50, 100);
         this.getContentPane().add(gp);
+
+        gp2 = new GamePanel();
+        gp2.setSize(200, 400);
+        gp2.setLocation(450, 100);
+        this.getContentPane().add(gp2);
+        
+        ClientListen clientListen = new ClientListen(gp2);
+        
+        MainFrame.isOver = false;
+        
+        changeNext();
+
+        cp.setVisible(true);
+        cp2.setVisible(true);
+
         go.setVisible(false);
         this.requestFocusInWindow();
     }//GEN-LAST:event_goActionPerformed
@@ -188,10 +226,10 @@ public class MainFrame extends javax.swing.JFrame {
     private void pauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseActionPerformed
         // 暂停按钮:
         if (isPause) {
-            isPause=false;
+            isPause = false;
             pause.setText("暂停");
-        }else{
-            isPause=true;
+        } else {
+            isPause = true;
             pause.setText("继续");
         }
         this.requestFocusInWindow();
@@ -205,41 +243,49 @@ public class MainFrame extends javax.swing.JFrame {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        MainFrame.isOver=false;
-        gp=new GamePanel();
-        gp.setSize(200,400);
+        MainFrame.isOver = false;
+        gp = new GamePanel();
+        gp.setSize(200, 400);
         gp.setLocation(50, 100);
         this.getContentPane().add(gp);
-        count=0;
+
+        gp2 = new GamePanel();
+        gp2.setSize(200, 400);
+        gp2.setLocation(450, 100);
+        this.getContentPane().add(gp2);
+
         changeCount();
         changeNext();
         cp.delOver();
         cp.setProp1Count(5);
+        cp2.delOver();
+        cp2.setProp1Count(5);
         this.requestFocusInWindow();
     }//GEN-LAST:event_startActionPerformed
 
     private void modelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modelActionPerformed
         // 模式切换
-        String mo=(String)model.getSelectedItem();
+        String mo = (String) model.getSelectedItem();
         switch (mo) {
             case "简约模式":
-                mod=0;
-                point=1;
+                mod = 0;
+                point = 1;
                 break;
             case "炫彩模式":
-                mod=1;
-                point=1;
+                mod = 1;
+                point = 1;
                 break;
             case "极速模式":
-                mod=2;
-                interval=100;
-                point=10;
+                mod = 2;
+                gp.getGameState().setInterval(100);
+                gp2.getGameState().setInterval(100);
+                point = 10;
                 break;
             default:
                 break;
         }
     }//GEN-LAST:event_modelActionPerformed
-    
+
     /**
      * @param args the command line arguments
      */
@@ -270,7 +316,7 @@ public class MainFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                MainFrame mf =new MainFrame();
+                MainFrame mf = new MainFrame();
                 mf.setVisible(true);
                 mf.requestFocusInWindow();
             }

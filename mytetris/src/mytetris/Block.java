@@ -92,7 +92,7 @@ public class Block {
     }
 
     /**
-     * 返回当前tblocks
+     * 返回当前形状数组
      * @return 
      */
     public int[] getCurrentBlocks() {
