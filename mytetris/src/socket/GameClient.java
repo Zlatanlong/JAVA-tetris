@@ -8,18 +8,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mytetris.GamePanel;
 
-public class ClientListen extends Thread {
+public class GameClient extends Thread {
 
     Socket clientSocket;
     GamePanel gamePanel;
 
-    public ClientListen(GamePanel gamePanel) {
+    public GameClient(GamePanel gamePanel, String ip) {
         try {
             this.gamePanel = gamePanel;
-            this.clientSocket = new Socket("127.0.0.1", 50000);
+            this.clientSocket = new Socket(ip, 50000);
             new Thread(this).start();
         } catch (IOException ex) {
-            Logger.getLogger(ClientListen.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

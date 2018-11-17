@@ -14,8 +14,11 @@
         <group>
             <file>file:/Users/zlatan/Documents/GitHub/JAVA-tetris/mytetris/src/mytetris/GamePanel.java</file>
             <file>file:/Users/zlatan/Documents/GitHub/JAVA-tetris/mytetris/src/mytetris/Controller.java</file>
-            <file>file:/Users/zlatan/Documents/GitHub/JAVA-tetris/mytetris/src/socket/ClientListen.java</file>
+            <file>file:/Users/zlatan/Documents/GitHub/JAVA-tetris/mytetris/src/socket/GameClient.java</file>
+            <file>file:/Users/zlatan/Documents/GitHub/JAVA-tetris/mytetris/src/socket/Server.java</file>
+            <file>file:/Users/zlatan/Documents/GitHub/JAVA-tetris/mytetris/src/mytetris/GameState.java</file>
             <file>file:/Users/zlatan/Documents/GitHub/JAVA-tetris/mytetris/src/mytetris/MainFrame.java</file>
+            <file>file:/Users/zlatan/Documents/GitHub/JAVA-tetris/mytetris/src/socket/SocketUtil.java</file>
             <file>file:/Users/zlatan/Documents/GitHub/JAVA-tetris/mytetris/src/socket/GameServer.java</file>
         </group>
     </open-files>

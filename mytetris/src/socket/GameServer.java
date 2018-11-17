@@ -13,7 +13,7 @@ import mytetris.GamePanel;
 
 public class GameServer extends Thread {
 
-    Socket client;
+    Socket socket;
     GamePanel gamePanel;
 
     
@@ -22,7 +22,7 @@ public class GameServer extends Thread {
             this.gamePanel = gamePanel;
             System.out.println("服务器开启！");
             ServerSocket serverSocket = new ServerSocket(50000);
-            client = serverSocket.accept();
+            socket = serverSocket.accept();
             System.out.println("----------------------------");
             System.out.println("有新的客户端连接到服务器喽！");
         new Thread(this).start();
@@ -37,7 +37,7 @@ public class GameServer extends Thread {
         try {
             BufferedReader br = new BufferedReader(
                     new InputStreamReader(
-                            client.getInputStream()));
+                            socket.getInputStream()));
             String code;
             while (!(code = br.readLine()).equals("bye")) {
                 gamePanel.getPressed(code);
@@ -45,7 +45,7 @@ public class GameServer extends Thread {
             }
             System.out.println("客户端已经关闭了对话！");
             br.close();
-            client.close();
+            socket.close();
         } catch (Exception e) {
             System.out.println("服务器已经关闭");
             e.printStackTrace();
@@ -53,6 +53,6 @@ public class GameServer extends Thread {
     }
 
     public Socket getSocket() {
-        return client;
+        return socket;
     }
 }

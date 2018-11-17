@@ -9,12 +9,12 @@ import java.util.logging.Logger;
 
 public class SocketUtil {
     
-    public static void send(Socket client,String string) {
-        if (client != null) {
+    public static void send(Socket socket,String string) {
+        if (socket != null) {
             try {
                 PrintWriter pw = new PrintWriter(
                         new OutputStreamWriter(
-                                client.getOutputStream()));
+                                socket.getOutputStream()));
                 pw.println(string);
                 pw.flush();
             } catch (IOException ex) {
