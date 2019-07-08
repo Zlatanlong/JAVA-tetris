@@ -18,7 +18,7 @@ public class SocketUtil {
                 pw.println(string);
                 pw.flush();
             } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("error!!");
             }
         }
     }

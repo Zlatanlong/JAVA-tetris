@@ -335,6 +335,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_modelActionPerformed
 
     private void openHomeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openHomeButtonActionPerformed
+        // 开房
         MainFrame.isOver = false;
         msg.setVisible(false);
         msg2.setVisible(false);
@@ -372,6 +373,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_joinHomeTextActionPerformed
 
     private void joinHomeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joinHomeButtonActionPerformed
+        // 加入房间
         MainFrame.isOver = false;
         msg.setVisible(false);
         msg2.setVisible(false);
